@@ -58,22 +58,20 @@ Voici une démonstration sur un poste de travail :
 PS C:\Windows\system32> Get-PSDrive
 
 ```
-* 
-**Alias** : il s’agit ici des alias mis en place pour appeler des cmdlets PowerShell. Ainsi, la commande `del` appelle en réalité la cmdlet `Remove-Item`. Il est bien sûr possible de rajouter de nouveaux alias.
-* 
-**FileSystem** : il s’agit des lecteurs contenant un système de fichiers. Ces lecteurs peuvent être locaux ou réseau.
-* 
-**Certificate** : correspond au magasin de certificats du poste de travail. Ce magasin de certificats est accessible en mode graphique depuis la console Microsoft Management Console (MMC), puis en ajoutant le composant logiciel enfichable nommé Certificats.
-* 
-**Environment** : contient la liste des variables d’environnement. Ces variables dynamiques sont utilisées par les différents processus du système d’exploitation. Ainsi, la variable d’environnement `$env:COMPUTERNAME` désigne le nom de l’ordinateur proprement enregistré dans Windows.
-* 
-**Function** : contient l’ensemble des fonctions présentes dans Windows PowerShell. Ces fonctions contiennent du code PowerShell qui est exécuté lorsque vous les appelez. Par exemple, lorsque vous rentrez la commande `D:` dans Windows PowerShell, ce dernier exécute en réalité : `Set-Location D:`. Il est bien sûr possible d’enregistrer de nouvelles fonctions.
-* 
-**Registry** : désigne la base de registre Windows. Cette base de données contient l’ensemble de la configuration du système d’exploitation et des logiciels installés. La base de registre est accessible avec une interface graphique en lançant l’exécutable `regedit.exe`.
-* 
-**Variable** : contient l’ensemble des variables durant la durée de vie du processus Windows PowerShell. Certaines variables sont préconstruites, comme `$PSVersionTable` et `$Host` qui ont été vues au chapitre Présentation de Windows PowerShell, et d’autres peuvent être créées.
-* 
-**WSMan** : contient les paramètres WS-Management. Ces paramètres sont principalement utilisés lors de l’utilisation de la fonctionnalité PowerShell Remoting.
+* **Alias** : il s’agit ici des alias mis en place pour appeler des cmdlets PowerShell. Ainsi, la commande `del` appelle en réalité la cmdlet `Remove-Item`. Il est bien sûr possible de rajouter de nouveaux alias.
+  
+* **FileSystem** : il s’agit des lecteurs contenant un système de fichiers. Ces lecteurs peuvent être locaux ou réseau.
+  
+* **Certificate** : correspond au magasin de certificats du poste de travail. Ce magasin de certificats est accessible en mode graphique depuis la console Microsoft Management Console (MMC), puis en ajoutant le composant logiciel enfichable nommé Certificats.
+  
+* **Environment** : contient la liste des variables d’environnement. Ces variables dynamiques sont utilisées par les différents processus du système d’exploitation. Ainsi, la variable d’environnement `$env:COMPUTERNAME` désigne le nom de l’ordinateur proprement enregistré dans Windows.
+  
+* **Function** : contient l’ensemble des fonctions présentes dans Windows PowerShell. Ces fonctions contiennent du code PowerShell qui est exécuté lorsque vous les appelez. Par exemple, lorsque vous rentrez la commande `D:` dans Windows PowerShell, ce dernier exécute en réalité : `Set-Location D:`. Il est bien sûr possible d’enregistrer de nouvelles fonctions.
+  
+* **Registry** : désigne la base de registre Windows. Cette base de données contient l’ensemble de la configuration du système d’exploitation et des logiciels installés. La base de registre est accessible avec une interface graphique en lançant l’exécutable `regedit.exe`.
+* **Variable** : contient l’ensemble des variables durant la durée de vie du processus Windows PowerShell. Certaines variables sont préconstruites, comme `$PSVersionTable` et `$Host` qui ont été vues au chapitre Présentation de Windows PowerShell, et d’autres peuvent être créées.
+  
+* **WSMan** : contient les paramètres WS-Management. Ces paramètres sont principalement utilisés lors de l’utilisation de la fonctionnalité PowerShell Remoting.
 
 ## 3. cmdlets de navigation 
 ### a. 
