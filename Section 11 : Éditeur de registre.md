@@ -300,7 +300,7 @@ Pourquoi cette méthode est-elle plus discrète qu'une clé "Run" ?
 * **Réponse :** Elle ne lance pas le processus au démarrage (moment très surveillé), mais elle attend une action légitime de l'utilisateur (ouvrir un document) pour s'exécuter silencieusement en arrière-plan tout en affichant le document attendu.
 
 ---
-# Exercice 5 : CYBER >>>: Détournement via les "Image File Execution Options" (IFEO)
+# Exercice 6 : CYBER >>>: Détournement via les "Image File Execution Options" (IFEO)
 **Objectif :** Utiliser PowerShell pour configurer un "débogueur" factice sur un utilitaire Windows (le Bloc-notes), afin de comprendre comment un attaquant peut intercepter le lancement d'un programme.
 
 ### Étape 1 : Localisation de la clé IFEO
