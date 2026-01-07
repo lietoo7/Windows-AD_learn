@@ -123,22 +123,25 @@ Ensuite les paramètres les plus importants de **Get-ChildItem** :
 PS C:\Users\Admin> Get-ChildItem -Path . -Hidden -Filter *.dat
 
 ```
+---
 4. cmdlets de Manipulation 
 
 ### a. 
 Get-Item 
-**Get-Item** permet de récupérer l’objet désigné dans la ligne de commande, grâce au paramètre **-Path**. Cette cmdlet est surtout très utile combinée à un tube, ou pipe en anglais (barre verticale, correspondant au caractère `|`), qui permet de passer le flux d’information de l’objet récupéré vers une autre cmdlet
+
+**Get-Item** permet de récupérer l’objet désigné dans la ligne de commande, grâce au paramètre **-Path**. Cette cmdlet est surtout très utile combinée à un tube, ou pipe en anglais (barre verticale, correspondant au caractère `|`), qui permet de passer le flux d’information de l’objet récupéré vers une autre cmdlet.
 Voici un aperçu des paramètres disponibles : 
 
 | Paramètre | Description |
 | --- | --- |
 | **-Exclude <String[]>** | Permet d’exclure des objets notifiés par le paramètre -Path. L’utilisation du caractère wildcard (*) est autorisée. |
 | **-Force** | Autorise la cmdlet à récupérer l’objet qui est normalement non accessible, tels que les fichiers cachés. |
-| **-Include <String[]>** | Récupère seulement les objets spécifiés. Le caractère wildcard (*) est autorisé. |
+| **-Include <String[]>** | Récupère seulement les objets spécifiés. Le caractère wildcard (*) est autorisé.  |
 | **-Path <String[]>** | Spécifie le chemin d’accès du ou des fichiers et/ou des dossiers. |
 
 **Exemples :**
 * L’exemple suivant permet de récupérer l’ensemble des fichiers avec l’extension *.txt présents dans un dossier spécifiquement ciblé : `PS C:\Windows\system32> Get-Item -Path C:\Temp\*.txt` 
+
 * Utilisation avec une copie : 
 `PS C:\Windows\system32> Get-Item -Path C:\Temp\*.txt | [cite_start]Copy-Item -Destination C:\Temp2` 
 
@@ -146,24 +149,29 @@ Voici un aperçu des paramètres disponibles :
 `PS C:\Temp> Get-Item .\IMGP3532.JPG | [cite_start]Format-List *` 
 * Calcul de la taille en mégaoctets : `PS C:\Temp> (Get-Item .\IMGP3532.JPG).Length / 1MB` (Résultat : 11,07... soit environ 11 Mo ).
 * Récupérer la date de dernière modification : `(Get-Item .\IMGP3532.JPG).LastWriteTime` 
----
 
+
+
+---
 ### b. 
 Get-Content 
 **Get-Content** permet de récupérer le contenu d’un objet. Même si ce dernier est un fichier binaire, Get-Content s’adapte et retourne un résultat.
 
 | Paramètre | Description |
 | --- | --- |
-| **-TotalCount <Int64>** | Retourne le nombre de lignes depuis le début du fichier. |
+| **-TotalCount <Int64>** | Retourne le nombre de lignes depuis le début du fichier.  |
 | **-Tail <Int32>** | Retourne le nombre de lignes depuis la fin du fichier. |
 
 **Exemple avec filtrage :**
+
 ```powershell
 PS C:\Windows\system32> Get-Content C:\Windows\System32\drivers\etc\hosts | Where-Object {$_ -match "acme.com"}
 
 ```
----
 
+
+
+---
 ### c. 
 Set-Content 
 À l’inverse de Get-Content, **Set-Content** permet d’écrire ou de remplacer des données dans un objet.
@@ -171,7 +179,8 @@ Set-Content
 | Paramètre | Description |
 | --- | --- |
 | **-Path <String[]>** | Chemin d’accès à l’objet (fichier, registre, etc.). |
-| **-Value <Object[]>** | Valeur à définir dans l’objet ciblé (chaîne de caractères ou objet). |
+| **-Value <Object[]>** | Valeur à définir dans l’objet ciblé (chaîne de caractères ou objet).|
+
 > **Note :** Si le fichier existe déjà, tout son contenu est écrasé. Si le dossier spécifié n’existe pas, une erreur est retournée.
 
 ---
@@ -188,10 +197,12 @@ Permet de créer des fichiers, mais aussi des dossiers.
 **Exemples :**
 * Création d'un fichier : `New-Item -Path C:\Temp\Test.txt -ItemType File` 
 * Création d'un dossier : `New-Item C:\Temp\RepTest -ItemType Directory` 
----
 
+
+
+---
 ### e. 
-Remove-Item 
+Remove-Item.
 Supprime des fichiers et/ou dossiers. Attention : cette action est irréversible car elle ne passe pas par la Corbeille.
 
 | Paramètre | Description |
@@ -200,6 +211,7 @@ Supprime des fichiers et/ou dossiers. Attention : cette action est irréversible
 | **-Path <String[]>** | Chemin d’accès de l’objet à supprimer. |
 | **-Recurse** | Supprime les objets et les sous-objets présents. |
 | **-WhatIf** | Retourne un aperçu du résultat sans exécuter la commande. |
+
 ---
 
 ### f. 
@@ -210,25 +222,122 @@ Permet de faire une copie d’un ou de plusieurs objets.
 | **-Destination <String>** | Chemin de destination. |
 | **-Path <String[]>** | Objet à copier. |
 | **-Recurse** | Spécifie une copie récursive. |
+
 ---
 
 ### g. 
 Rename-Item 
 Permet de renommer un objet.
-`PS C:\Temp> Rename-Item -Path .\ScriptPowerShell.ps1 -NewName Migration.ps1`
+`PS C:\Temp> Rename-Item -Path .\ScriptPowerShell.ps1 -NewName Migration.ps1` 
 
 ---
 
 ### h. 
+
 Move-Item 
+
 Permet de déplacer un fichier ou un dossier vers un autre emplacement.
 `PS C:\Windows\system32> Move-Item -Path .\Migration.ps1 -Destination C:\Temp` 
 
 ---
+
 ### i. 
+
 Invoke-Item 
+
 Cette cmdlet permet d’ouvrir un fichier et d’effectuer son action par défaut (lancement de l’application associée). Elle permet notamment d'ouvrir plusieurs fichiers en une seule fois via des caractères génériques.
 `PS C:\Windows\system32> Invoke-Item C:\Temp\*.txt` 
+ 
+## 5. Exercices
+
+### Exercice 1 : Prise en main et navigation
+**Objectif :** Vérifier votre version de PowerShell, explorer les disques disponibles, et vous déplacer dans le système de fichiers.
+**Ouvrez votre interface PowerShell**.
+**Affichez la version de PowerShell installée sur votre machine**.
+* `$psversiontable` 
+**Listez tous les "lecteurs" (drives) accessibles depuis PowerShell sur votre système**.
+* `get-psdrive` 
+
+**Que remarquez-vous par rapport aux lecteurs traditionnels (comme C: ou D:)?** 
+* PowerShell expose d'autres "lecteurs" virtuels comme Alias, Function, Variable ou Registry, ce qui permet d'interagir avec d'autres parties du système de la même manière qu'avec des fichiers.
+ 
+**Affichez le répertoire de travail actuel**.
+* `get-location` 
+
+**Créez un dossier appelé "MonProjet" dans le répertoire C:\Temp (si C:\Temp n'existe pas, créez-le d'abord)**.
+* `new-item .\Temp -type directory`
+   
+**Déplacez-vous dans ce nouveau répertoire "MonProjet"**.
+* `set-location .\Temp`
+   
+**Affichez de nouveau le répertoire de travail pour confirmer que vous vous y trouvez bien**.
+* `get-childitem` 
+---
+
+### Exercice 2 : Création et manipulation d'objets
+**Objectif :** Créer des fichiers et des dossiers, puis les renommer et les supprimer.
+
+**Assurez-vous d'être dans le répertoire C:\Temp\MonProjet**.
+`set-location c:\Temp\MonProjet` 
+* `get-location` 
+ 
+**Créez trois fichiers texte vides à l'intérieur de ce dossier : "fichier1.txt", "fichier2.txt" et "rapport.log"**.
+* `new-item -type file fichier1.txt, fichier2.txt, rapport.log` 
+
+**Listez le contenu du dossier pour vérifier que les fichiers ont bien été créés**.
+* `get-childitem` 
+
+**Renommez le fichier "fichier2.txt" en "fichier_renomme.txt"**.
+* `rename-item fichier2.txt fichier_renomme.txt` 
+
+**Créez un sous-dossier nommé "AnciensFichiers" dans votre répertoire MonProjet**.
+* `new-item AnciensFichiers -type directory` 
+
+
+**Déplacez le fichier "fichier_renomme.txt" dans le sous-dossier "AnciensFichiers"**.
+* `move-item -path fichier_renomme.txt -destination .\AncienFichiers` 
 
 ---
- 
+
+### Exercice 3 : Écriture et lecture de contenu
+**Objectif :** Écrire du texte dans des fichiers et lire leur contenu.
+
+**Dans le fichier "fichier1.txt", ajoutez le texte suivant : "Ceci est la première ligne de mon fichier."** 
+* `set-content -path .fichier1.txt -value “ceci est la premiere ligne du fihcier”` 
+  
+**Ajoutez une nouvelle ligne au fichier "fichier1.txt" avec le texte : "Ceci est la deuxième ligne."** 
+* `add-content -path .fichier1.txt -value “ceci est la deuxieme ligne du fihcier”`
+
+**Lisez et affichez le contenu complet du fichier "fichier1.txt" dans la console**.
+* `get-content -path .\ fichier1.txt` 
+
+**Créez un nouveau fichier "notes.txt" et écrivez-y directement le contenu suivant : "Projet terminé le 21/08/2025."** 
+* `new-item note.txtx -value “projet termine le 21/08/2025”` 
+
+
+**Listez les fichiers du répertoire MonProjet qui se terminent par .txt et qui ont été modifiés dans les 24 dernières heures**.
+* (Indice : Pour cet exercice, la colonne LastWriteTime de Get-ChildItem sera utile. Vous pouvez aussi utiliser l'opérateur -Filter) .
+* `Get-ChildItem -Path . -Filter '*.txt' | [cite_start]Where-Object { $_.LastWriteTime -ge (Get-Date).AddDays(-1) }` 
+
+---
+
+### Exercice 4 : Suppression sécurisée
+
+**Objectif :** Utiliser les options de sécurité avant de supprimer des fichiers ou des dossiers.
+* Simulez la suppression du fichier "rapport.log" sans le supprimer réellement. Quelle commande utilisez-vous pour cela ? 
+* `remove-item rapport.log -whatif` 
+
+**Supprimez ensuite définitivement le fichier "rapport.log"**.
+* `remove-item rapport.log` 
+
+**Simulez la suppression du dossier "AnciensFichiers" et de tout ce qu'il contient**.
+* `remove-item AncienFichiers -recurse -whatif` 
+
+
+**Maintenant, supprimez définitivement le dossier "AnciensFichiers" et son contenu, sans que PowerShell vous demande une confirmation**.
+
+* (Indice : Le paramètre -Recurse est utile pour les dossiers) .
+* `remove-item AncienFichiers -recurse -force` 
+
+
+
