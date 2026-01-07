@@ -15,6 +15,7 @@ Ce dépôt est un guide complet dédié aux fondamentaux du système d'exploitat
 9. [Moniteur de ressources (resmon)]( )
 10. [Invite de commandes (CMD)]( )
 11. [Éditeur de registre]( )
+12. [Powershell]( )
 
 ---
 
