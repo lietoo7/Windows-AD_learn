@@ -15,8 +15,9 @@ Ce dépôt est un guide complet dédié aux fondamentaux du système d'exploitat
 9. [Moniteur de ressources (resmon)]( )
 10. [Invite de commandes (CMD)]( )
 11. [Éditeur de registre]( )
-12. [Powershell]( )
-13. [systemreset]( )
+12. [Les paramètres réseau]()
+13. [Powershell]( )
+14. [systemreset]( )
 
 ---
 
