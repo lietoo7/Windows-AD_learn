@@ -199,3 +199,176 @@ Pour accéder aux réglages de bas niveau, on utilise souvent les "Propriétés 
 * **Démarrage et récupération :** Définit le comportement du système en cas d'erreur fatale (Écran bleu / BSOD), notamment la création de fichiers de vidage mémoire (dumps).
 * **Variables d'environnement :** Accès direct pour modifier les chemins système (PATH) et autres variables globales.
  
+### les fonctions avancées de **BCDEdit**.
+
+### 1. Gestion du Délai d'Attente (Timeout)
+
+Le timeout définit le temps (en secondes) pendant lequel le menu de démarrage s'affiche avant de lancer l'entrée par défaut.
+
+* **Modifier le délai :**
+```bash
+bcdedit /timeout 15
+
+```
+*(Ici réglé sur 15 secondes)*.
+
+### 2. Création d'une Entrée de Secours (Dual Boot de sécurité)
+
+Il est possible de copier l'entrée actuelle pour créer un clone. Si vous cassez la configuration de l'entrée principale, la seconde restera fonctionnelle.
+
+#### Étape A : Copier l'entrée actuelle
+
+```bash
+bcdedit /copy {current} /d "Démarrage de Secours"
+
+```
+
+* **Note :** Cette commande va générer un identifiant long (GUID) entre accolades, type `{896e...}`. **Notez-le bien.**
+
+#### Étape B : Désactiver le mode sans échec sur cette copie (si nécessaire)
+
+Si vous voulez être sûr que cette copie démarre normalement :
+
+```bash
+bcdedit /deletevalue {GUID_DE_LA_COPIE} safeboot
+
+```
+
+### 3. Résumé des Identifiants (Cheat Sheet)
+
+| Identifiant | Rôle |
+| --- | --- |
+| **{bootmgr}** | Le programme qui affiche le menu au démarrage. |
+| **{current}** | L'OS sur lequel vous avez ouvert l'invite de commande. |
+| **{default}** | L'OS qui démarrera automatiquement après le timeout. |
+| **{memdiag}** | L'outil de diagnostic de la mémoire Windows. |
+
+### 4. Cas pratique : Supprimer une entrée inutile
+
+Si vous avez trop d'entrées dans votre menu de démarrage (après un clone ou une mauvaise manipulation) :
+
+```bash
+bcdedit /delete {GUID_A_SUPPRIMER}
+
+```
+
+> [!WARNING]
+> N'utilisez jamais `/delete` sur `{current}` ou `{default}` sans avoir une autre entrée valide, sinon le PC ne démarrera plus.
+
+### 5. Schéma du flux de démarrage
+
+Le BCD intervient très tôt. Voici l'ordre logique traité par le système :
+
+1. **BIOS/UEFI** initialise le matériel.
+2. **Boot Manager ({bootmgr})** lit le fichier BCD.
+3. **Le Menu** s'affiche (pendant le temps défini par `/timeout`).
+4. **Winload.exe** charge le noyau Windows correspondant à l'entrée choisie.
+
+### les fonctions avancées de Taskkill
+
+La commande `taskkill` permet de mettre fin à une ou plusieurs tâches ou processus. Elle est particulièrement utile lorsque l'interface graphique (le Gestionnaire des tâches) ne répond plus ou pour créer des scripts de maintenance.
+
+### Syntaxe de base
+
+La structure générale de la commande est la suivante :
+`taskkill [/S système] [/U utilisateur [/P mot_de_passe]] { [/FI filtre] [/PID id_processus | /IM nom_image] } [/F] [/T]`
+
+### Options et Arguments principaux
+
+| Option | Description |
+| --- | --- |
+| **/IM** (Image Name) | Spécifie le nom du fichier exécutable du processus à arrêter (ex: `notepad.exe`). |
+| **/PID** (Process ID) | Spécifie l'identifiant numérique du processus (visible dans le Gestionnaire des tâches). |
+| **/F** (Force) | Force la fermeture du processus. À utiliser si le programme ne répond pas. |
+| **/T** (Tree) | Arrête le processus spécifié **et tous les processus enfants** qu'il a générés. |
+| **/S** (System) | Spécifie le nom ou l'adresse IP d'un ordinateur distant. |
+
+### Cas d'utilisation courants
+
+### 1. Forcer la fermeture d'un programme
+
+C'est la commande que vous avez mentionnée. Elle est idéale pour un logiciel "planté".
+
+* **Commande :** `taskkill /F /IM nom_du_processus.exe`
+* **Exemple :** `taskkill /F /IM chrome.exe` (Ferme toutes les instances de Google Chrome).
+
+### 2. Fermer un processus et ses dépendances
+
+Certains logiciels ouvrent plusieurs sous-processus. Pour tout nettoyer d'un coup :
+
+* **Commande :** `taskkill /F /T /IM excel.exe`
+
+### 3. Utilisation de filtres avancés (`/FI`)
+
+Vous pouvez cibler des processus selon des critères précis, comme ceux qui ne répondent plus.
+
+* **Commande :** `taskkill /FI "STATUS eq NOT RESPONDING"`
+
+### 4. Gestion de l'onglet "Démarrage" et Automatisation
+
+Bien que `taskkill` serve à arrêter des processus **actifs**, il est souvent couplé à d'autres outils pour gérer le démarrage :
+
+1. **Identification :** Utilisez `tasklist` pour voir ce qui tourne actuellement.
+2. **Nettoyage au démarrage :** Si un programme se lance automatiquement et que vous voulez l'arrêter via un script (.bat) au démarrage de la session :
+* Créez un fichier `clean_startup.bat`.
+* Ajoutez vos lignes `taskkill /F /IM malin.exe`.
+
+3. **Alternative (MSConfig/Task Manager) :** Pour empêcher un programme de se lancer, préférez l'onglet "Démarrage" du Gestionnaire des tâches ou la commande `msconfig`.
+
+> [!CAUTION]
+> **Attention :** Forcer la fermeture d'un processus avec `/F` ne permet pas au logiciel de sauvegarder les données en cours. Utilisez-le avec prudence sur des outils de travail comme Word ou des bases de données.
+
+### les fonctions avancées de gestion des Services via `NET`
+
+La commande `NET` est un utilitaire de ligne de commande hérité mais puissant, utilisé pour gérer les ressources réseau et les services système sous Windows. Bien que PowerShell propose désormais `Start-Service` et `Stop-Service`, la syntaxe `NET` reste la plus rapide et la plus compatible.
+
+### 1. Syntaxe de base
+
+| Action | Commande | Description |
+| --- | --- | --- |
+| **Démarrer** | `net start [NomDuService]` | Lance un service arrêté ou en pause. |
+| **Arrêter** | `net stop [NomDuService]` | Arrête un service en cours d'exécution. |
+| **Lister** | `net start` | Affiche la liste de tous les services **actifs**. |
+
+### 2. Identification du "Nom du Service"
+
+Il est crucial de distinguer le **Nom de l'affichage** (ex: *Spouleur d'impression*) du **Nom du service** réel (ex: *Spooler*). C'est ce dernier qu'il faut utiliser en ligne de commande.
+
+**Comment trouver le nom exact :**
+
+1. Ouvrez l'onglet **Services** (via `services.msc`).
+2. Faites un clic droit sur un service > **Propriétés**.
+3. Le "Nom du service" est celui affiché tout en haut de l'onglet Général.
+
+### 3. Exemples d'utilisation courants
+
+#### Gérer le service d'impression (Spooler)
+
+Souvent utilisé pour débloquer une file d'attente d'impression :
+* `net stop spooler`
+* `net start spooler`
+
+#### Gérer le service Windows Update
+
+* `net stop wuauserv`
+* `net start wuauserv`
+
+### 4. Règles et Astuces
+
+* **Guillemets :** Si le nom du service contient des espaces, vous devez impérativement utiliser des guillemets.
+* *Exemple :* `net start "AdobeUpdateService"`
+
+
+* **Privilèges :** Ces commandes nécessitent une **Invite de commande exécutée en tant qu'administrateur**. Sans cela, vous recevrez une "Erreur système 5 : Accès refusé".
+* **Dépendances :** Si vous arrêtez un service dont d'autres services dépendent, Windows vous demandera confirmation avant de tous les arrêter.
+* **Statut de retour :**
+* Si le service est déjà lancé, `net start` renverra un message d'information.
+* Si le service ne peut pas démarrer (erreur de configuration), un code d'erreur spécifique s'affichera.
+
+### 5. Alternative moderne (SC)
+
+Pour des actions plus complexes (comme changer le type de démarrage ou interroger l'état précis), on utilise souvent la commande `sc` (Service Control) :
+
+* `sc query [NomDuService]` : Pour voir le statut détaillé.
+* `sc config [NomDuService] start= disabled` : Pour désactiver un service.
+
