@@ -7,24 +7,32 @@ Cette section traite de la gestion de l'identité des utilisateurs sur une machi
 
 Windows distingue principalement deux types de comptes pour garantir la sécurité du système :
 
-**Utilisateur Standard :** * Peut utiliser la plupart des logiciels et modifier les paramètres qui n'affectent que son propre profil.
+**Utilisateur Standard :** 
+Peut utiliser la plupart des logiciels et modifier les paramètres qui n'affectent que son propre profil.
 Ne peut pas installer de logiciels impactant le système global ni modifier les fichiers système ou les paramètres de sécurité.
 
 
-**Administrateur :** * Possède un contrôle total sur l'ordinateur.
+**Administrateur :** 
+Possède un contrôle total sur l'ordinateur.
 Peut installer des applications, modifier le registre, gérer les autres comptes et accéder à tous les fichiers de la machine.
 
 
-**Système (SYSTEM) :** Un compte invisible encore plus puissant que l'administrateur, utilisé par Windows lui-même pour gérer les processus de bas niveau.
+**Système (SYSTEM) :** 
+Un compte invisible encore plus puissant que l'administrateur, utilisé par Windows lui-même pour gérer les processus de bas niveau.
 
 ---
 ## 2. Création, Modification et Suppression
 
 La gestion des comptes peut s'effectuer via l'application **Paramètres** ou la console **netplwiz** (plus avancée).
 
-* **Création :** Lors de la création, Windows demande s'il s'agit d'un compte local ou d'un compte Microsoft (lié au cloud).
-* **Modification :** Permet de changer le mot de passe, de modifier le type de compte (passer de Standard à Administrateur) ou de changer l'image de profil.
-* **Suppression :** Lors de la suppression, Windows propose de conserver ou de supprimer les fichiers personnels de l'utilisateur (documents, bureau, etc.).
+**Création :**
+Lors de la création, Windows demande s'il s'agit d'un compte local ou d'un compte Microsoft (lié au cloud).
+
+**Modification :** 
+Permet de changer le mot de passe, de modifier le type de compte (passer de Standard à Administrateur) ou de changer l'image de profil.
+
+**Suppression :** 
+Lors de la suppression, Windows propose de conserver ou de supprimer les fichiers personnels de l'utilisateur (documents, bureau, etc.).
 
 ---
 ## 3. Profils Utilisateurs (C:\Users)
