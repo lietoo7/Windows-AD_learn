@@ -79,7 +79,7 @@ Permet de changer le mot de passe, de modifier le type de compte (passer de Stan
 Lors de la suppression, Windows propose de conserver ou de supprimer les fichiers personnels de l'utilisateur (documents, bureau, etc.).
 
 ---
-## 3. Profils Utilisateurs (C:\Users)
+## 4. Profils Utilisateurs (C:\Users)
 
 Lorsqu'un utilisateur se connecte pour la première fois, Windows crée un **Profil**.
 
@@ -88,7 +88,7 @@ Lorsqu'un utilisateur se connecte pour la première fois, Windows crée un **Pro
 * **NTUSER.DAT :** Un fichier caché crucial dans chaque profil. Il contient les paramètres de registre spécifiques à l'utilisateur (HKEY_CURRENT_USER). Si ce fichier est supprimé ou corrompu, le profil ne pourra pas se charger correctement.
 
 ---
-## 4. Permissions sur les profils
+## 5. Permissions sur les profils
 
 Par défaut, Windows applique une isolation stricte :
 
