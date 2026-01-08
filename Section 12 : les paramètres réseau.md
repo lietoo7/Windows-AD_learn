@@ -74,6 +74,13 @@ Permet l'échange de dossiers entre deux machines sur le même réseau.
 2. Cliquez sur **Partage avancé** > **Partager ce dossier**.
 3. Configurez les **Autorisations** (ex : "Tout le monde" avec lecture/écriture).
 
+Puis sur les autorisations de Sécurité (NTFS), toujours dans les Propriétés du dossier, allez sur l'onglet Sécurité.
+
+4. Cliquez sur Modifier puis sur Ajouter.
+5. Tapez Tout le monde (ou Everyone si votre Windows est en anglais) et validez.
+6. Sélectionnez "Tout le monde" dans la liste et cochez les cases Lecture et exécution, Affichage du contenu du dossier et Lecture.
+7. Cliquez sur Appliquer.
+
 ### 3. Accéder au partage
 
 Depuis une autre machine, utilisez le raccourci `Windows + R` et tapez :
