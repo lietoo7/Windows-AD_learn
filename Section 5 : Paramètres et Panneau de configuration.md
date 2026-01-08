@@ -191,14 +191,160 @@ Cet onglet est particulièrement utile en **Mode sans échec**. Si l'interface h
 ## 3. Configuration système avancée
 
 Pour accéder aux réglages de bas niveau, on utilise souvent les "Propriétés système" (accessibles via `sysdm.cpl`).
+-------------------------------------------
+### 3.1. Nom de l'Ordinateur
 
-* **Nom de l'ordinateur :** Pour modifier le nom de la machine ou joindre un domaine/groupe de travail.
-* **Paramètres système avancés :**
-* **Performances :** Permet de désactiver les effets visuels pour accélérer le système ou de gérer la **Mémoire virtuelle** (fichier d'échange / pagefile.sys).
-* **Profils utilisateur :** Une autre méthode pour supprimer des profils stockés sur le disque.
-* **Démarrage et récupération :** Définit le comportement du système en cas d'erreur fatale (Écran bleu / BSOD), notamment la création de fichiers de vidage mémoire (dumps).
-* **Variables d'environnement :** Accès direct pour modifier les chemins système (PATH) et autres variables globales.
- 
+#### Modifier le Nom de la Machine
+
+1. **Accéder aux Propriétés Système :**
+   - Appuyez sur `Win + R`, tapez `sysdm.cpl`, puis appuyez sur `Entrée`.
+
+2. **Onglet "Nom de l'ordinateur" :**
+   - Cliquez sur l'onglet **"Nom de l'ordinateur."**
+  
+3. **Changer le Nom :**
+   - Cliquez sur le bouton **"Modifier..."**.
+   - Dans le champ **"Nom de l’ordinateur,"** entrez le nouveau nom souhaité.
+   
+4. **Joindre un Domaine ou un Groupe de Travail :**
+   - Sous **"Membre de,"** sélectionnez **"Domaine"** ou **"Groupe de travail"**.
+   - Entrez le nom du domaine ou du groupe de travail, puis cliquez sur **OK**.
+   
+5. **Redémarrage :**
+   - Un redémarrage du système sera nécessaire pour appliquer les changements.
+
+### 3.2. Paramètres Système Avancés
+
+#### 3.2.1. Performances
+
+##### Configurer les Effets Visuels
+
+1. **Accéder aux Propriétés Système :**
+   - Appuyez sur `Win + R`, tapez `sysdm.cpl`, puis appuyez sur `Entrée`.
+
+2. **Onglet "Avancé" :**
+   - Allez dans l'onglet **"Avancé."**
+   - Cliquez sur le bouton **"Paramètres..."** sous la section **"Performances."**
+
+3. **Ajuster les Effets Visuels :**
+   - Dans l'onglet **"Effets visuels,"** choisissez **"Personnalisé."**
+   - Désélectionnez les effets visuels que vous ne souhaitez pas utiliser.
+   - Cliquez sur **OK** pour appliquer les changements.
+
+##### Gestion de la Mémoire Virtuelle
+
+1. **Dans le même menu des "Paramètres de performance" :**
+   - Cliquez sur l'onglet **"Avancé."**
+   - Dans la section **"Mémoire virtuelle,"** cliquez sur le bouton **"Modifier..."**.
+
+2. **Configurer le Fichier d'Échange :**
+   - Décochez **"Gestion automatique du fichier d’échange pour tous les lecteurs."**
+   - Choisissez le lecteur, puis définissez la taille du fichier d'échange (Taille initiale et Taille maximale).
+   - Cliquez sur **"Définir,"** puis sur **OK** pour enregistrer et fermer.
+
+#### 3.2.2. Profils Utilisateur
+
+##### Gestion des Profils
+
+1. **Accéder à la Gestion des Profils :**
+   - Lancez **"Propriétés système"** via `sysdm.cpl` comme précédemment.
+  
+2. **Accéder aux Profils Utilisateurs :**
+   - Sous l'onglet **"Avancé,"** recherchez la section **"Profils utilisateurs."**
+   - Cliquez sur le bouton **"Paramètres..."** pour voir tous les profils.
+
+3. **Supprimer un Profil :**
+   - Sélectionnez le profil que vous souhaitez supprimer.
+   - Cliquez sur **"Supprimer."**
+   - Confirmez la suppression lorsque cela est demandé.
+
+#### 3.2.3. Démarrage et Récupération
+
+##### Configurer Comportement en cas d'Erreur
+
+1. **Accéder aux Propriétés Système :**
+   - Ouvrez **"Propriétés système"** via `sysdm.cpl`.
+
+2. **Onglet "Avancé" :**
+   - Dans cet onglet, trouvez la section **"Démarrage et récupération."**
+   - Cliquez sur le bouton **"Paramètres..."**.
+
+3. **Configurer les Options :**
+   - Sous **"Échec du système,"** cochez ou décochez les options souhaitées, par exemple **"Redémarrer automatiquement."**
+   - Définissez le type de fichier de vidage mémoire que vous souhaitez créer dans le menu déroulant.
+
+4. **Appliquer les Changements :**
+   - Cliquez sur **OK** pour enregistrer les modifications.
+
+#### 3.2.4. Variables d'Environnement
+
+##### Accéder et Modifier les Variables Système
+
+1. **Accéder aux Propriétés Système :**
+   - Ouvrez **"Propriétés système"** via `sysdm.cpl`.
+
+2. **Onglet "Avancé" :
+Voici un résumé détaillé du contenu de votre fichier concernant la commande **sysdm.cpl**, organisé en format Markdown :
+
+---
+
+# Guide de la commande sysdm.cpl : Accès aux propriétés système de Windows
+
+Comment utiliser la commande intégrée **sysdm.cpl** pour accéder rapidement aux paramètres avancés de Windows ?  
+
+## Qu'est-ce que la commande sysdm.cpl ?
+
+* **Définition** : C'est un utilitaire Windows intégré qui ouvre directement la boîte de dialogue **Propriétés système**.
+* **Signification** : L'extension ".cpl" signifie *Control Panel* (Panneau de configuration), indiquant qu'il s'agit d'un raccourci vers un applet spécifique du panneau de configuration.
+* **Compatibilité** : Elle est disponible sur presque toutes les versions de Windows, incluant Windows 11, 10, 8, 7, Vista et XP .
+
+## Comment exécuter la commande
+
+Il existe trois méthodes principales pour lancer cet outil :
+
+1. **Boîte de dialogue Exécuter** : Appuyez sur `Windows + R`, tapez `sysdm.cpl` et appuyez sur Entrée.
+2. **Invite de commandes (CMD)** : Ouvrez le terminal, tapez `sysdm.cpl` et validez.
+3. **Windows PowerShell** : Ouvrez PowerShell, saisissez `sysdm.cpl` et appuyez sur Entrée.
+
+## Exploration des onglets des Propriétés Système
+
+Une fois la fenêtre ouverte, vous trouverez cinq onglets principaux :
+
+### 1. Nom de l'ordinateur
+
+* Affiche le nom actuel de la machine et le groupe de travail (Workgroup).
+* **Fonctionnalités** : Permet de renommer l'ordinateur ou de rejoindre un domaine/groupe de travail pour la mise en réseau.
+
+### 2. Matériel
+
+* Fournit un accès direct au **Gestionnaire de périphériques** pour gérer les composants matériels.
+* Permet de configurer les options de signature des pilotes.
+
+### 3. Paramètres système avancés
+
+C'est la section la plus puissante pour optimiser le système:
+
+* **Performances** : Ajustement des effets visuels et de la mémoire virtuelle (fichier d'échange).
+* **Profils utilisateurs** : Gestion des comptes et des paramètres associés.
+* **Démarrage et récupération** : Choix du système d'exploitation par défaut et configuration des actions en cas de défaillance (plantage).
+
+### 4. Protection du système
+
+* Gère les **points de restauration** du système.
+* Permet de restaurer Windows à un état antérieur en cas de dysfonctionnement.
+
+### 5. Utilisation à distance
+
+* Permet d'activer ou de désactiver les connexions au **Bureau à distance**.
+* **Conseil** : Utilisez des mots de passe robustes pour sécuriser cet accès.
+
+### Astuces et Dépannage
+
+* **Créer un raccourci bureau** : Faites un clic droit sur votre bureau > Nouveau > Raccourci. Tapez `sysdm.cpl` comme emplacement et nommez-le "Propriétés Système" .
+* **Erreur "Fichier introuvable"** : Si la commande ne fonctionne pas, il est possible que le fichier système soit manquant ou corrompu.
+
+---
+
 ### les fonctions avancées de **BCDEdit**.
 
 ### 1. Gestion du Délai d'Attente (Timeout)
