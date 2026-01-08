@@ -6,14 +6,12 @@ Cette section détaille la manière dont Windows gère le stockage, l'organisati
 
 Les permissions NTFS (New Technology File System) déterminent le niveau d'accès des utilisateurs aux fichiers et dossiers.
 
-* **Permissions de base :**
+### **Permissions de base :**
 * **Lecture :** Afficher le contenu du fichier ou du dossier.
 * **Écriture :** Modifier le contenu ou créer de nouveaux fichiers.
 * **Lecture et exécution :** Lancer des programmes (.exe, .bat) et lire le contenu.
 * **Modification :** Lire, écrire et supprimer des fichiers/dossiers.
 * **Contrôle total :** Tous les droits, y compris le changement des permissions pour autrui.
-
-
 * **Héritage :** Par défaut, un sous-dossier hérite des permissions de son dossier parent.
 
 ## 2. Historique : HPFS, FAT16 et FAT32
